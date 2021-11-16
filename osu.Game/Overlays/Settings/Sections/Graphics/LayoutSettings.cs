@@ -32,7 +32,6 @@ namespace osu.Game.Overlays.Settings.Sections.Graphics
         private readonly IBindableList<WindowMode> windowModes = new BindableList<WindowMode>();
 
         private Bindable<ScalingMode> scalingMode;
-        private Bindable<Orientation> orientation;
         private Bindable<Size> sizeFullscreen;
 
         private readonly BindableList<Size> resolutions = new BindableList<Size>(new[] { new Size(9999, 9999) });
@@ -65,11 +64,6 @@ namespace osu.Game.Overlays.Settings.Sections.Graphics
             {
                 currentDisplay.BindTo(host.Window.CurrentDisplayBindable);
                 windowModes.BindTo(host.Window.SupportedWindowModes);
-            }
-
-            if (RuntimeInfo.OS == RuntimeInfo.Platform.Android)
-            {
-                orientation = config.GetBindable<Orientation>(FrameworkSetting.Orientation);
             }
 
             Children = new Drawable[]

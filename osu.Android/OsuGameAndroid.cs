@@ -70,7 +70,7 @@ namespace osu.Android
         protected override void LoadComplete()
         {
             base.LoadComplete();
-            LoadComponentAsync(new GameplayScreenRotationLocker(), Add);
+            LoadComponentAsync(new ScreenOrientationHandler(), Add);
         }
 
         protected override UpdateManager CreateUpdateManager() => new SimpleUpdateManager();
