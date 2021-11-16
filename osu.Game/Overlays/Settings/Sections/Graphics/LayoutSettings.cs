@@ -4,6 +4,7 @@
 using System;
 using System.Drawing;
 using System.Linq;
+using osu.Framework;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Configuration;
@@ -31,6 +32,7 @@ namespace osu.Game.Overlays.Settings.Sections.Graphics
         private readonly IBindableList<WindowMode> windowModes = new BindableList<WindowMode>();
 
         private Bindable<ScalingMode> scalingMode;
+        private Bindable<Orientation> orientation;
         private Bindable<Size> sizeFullscreen;
 
         private readonly BindableList<Size> resolutions = new BindableList<Size>(new[] { new Size(9999, 9999) });
@@ -40,6 +42,7 @@ namespace osu.Game.Overlays.Settings.Sections.Graphics
 
         private SettingsDropdown<Size> resolutionDropdown;
         private SettingsDropdown<WindowMode> windowModeDropdown;
+        private SettingsEnumDropdown<Orientation> orientationDropdown;
 
         private Bindable<float> scalingPositionX;
         private Bindable<float> scalingPositionY;
@@ -64,6 +67,11 @@ namespace osu.Game.Overlays.Settings.Sections.Graphics
                 windowModes.BindTo(host.Window.SupportedWindowModes);
             }
 
+            if (RuntimeInfo.OS == RuntimeInfo.Platform.Android)
+            {
+                orientation = config.GetBindable<Orientation>(FrameworkSetting.Orientation);
+            }
+
             Children = new Drawable[]
             {
                 windowModeDropdown = new SettingsDropdown<WindowMode>
@@ -71,6 +79,12 @@ namespace osu.Game.Overlays.Settings.Sections.Graphics
                     LabelText = GraphicsSettingsStrings.ScreenMode,
                     ItemSource = windowModes,
                     Current = config.GetBindable<WindowMode>(FrameworkSetting.WindowMode),
+                },
+                orientationDropdown = new SettingsEnumDropdown<Orientation>
+                {
+                    LabelText = GraphicsSettingsStrings.ScreenOrientation,
+                    Current = config.GetBindable<Orientation>(FrameworkSetting.Orientation),
+                    Keywords = new[] { "orientation", "landscape", "portrait" }
                 },
                 resolutionDropdown = new ResolutionSettingsDropdown
                 {
@@ -183,6 +197,9 @@ namespace osu.Game.Overlays.Settings.Sections.Graphics
             // initial update bypasses transforms
             updateScalingModeVisibility();
 
+            // Set orientation visibility
+            setOrientationVisibility();
+
             void updateResolutionDropdown()
             {
                 if (resolutions.Count > 1 && windowModeDropdown.Current.Value == WindowMode.Fullscreen)
@@ -198,6 +215,15 @@ namespace osu.Game.Overlays.Settings.Sections.Graphics
 
                 scalingSettings.AutoSizeAxes = scalingMode.Value != ScalingMode.Off ? Axes.Y : Axes.None;
                 scalingSettings.ForEach(s => s.TransferValueOnCommit = scalingMode.Value == ScalingMode.Everything);
+            }
+
+            void setOrientationVisibility()
+            {
+                // Currently only shows on Android. Add iOS if needed.
+                if (RuntimeInfo.OS == RuntimeInfo.Platform.Android)
+                    orientationDropdown.Show();
+                else
+                    orientationDropdown.Hide();
             }
         }
 

@@ -50,6 +50,11 @@ namespace osu.Game.Localisation
         public static LocalisableString ScreenMode => new TranslatableString(getKey(@"screen_mode"), @"Screen mode");
 
         /// <summary>
+        /// "Screen orientation"
+        /// </summary>
+        public static LocalisableString ScreenOrientation => new TranslatableString(getKey(@"screen_orientation"), @"Screen orientation");
+
+        /// <summary>
         /// "Resolution"
         /// </summary>
         public static LocalisableString Resolution => new TranslatableString(getKey(@"resolution"), @"Resolution");
