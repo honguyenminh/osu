@@ -3,34 +3,30 @@
 
 using Android.Content.PM;
 using osu.Framework.Allocation;
-using osu.Framework.Bindables;
-using osu.Framework.Graphics;
-using osu.Framework.Configuration;
 using osu.Framework.Android.Platform;
+using osu.Framework.Bindables;
+using osu.Framework.Configuration;
+using osu.Framework.Graphics;
 using osu.Game;
 
 namespace osu.Android
 {
-    public class ScreenOrientationManager : AndroidOrientationManager
+    public class ScreenOrientationManager : Component
     {
         private Bindable<bool> localUserPlaying;
 
+        private AndroidOrientationManager manager;
+
+        [Resolved]
+        private OsuGameActivity gameActivity { get; set; }
+
         [BackgroundDependencyLoader]
-        private void load(OsuGame game, OsuGameActivity gameActivity, FrameworkConfigManager config)
+        private void load(OsuGame game, FrameworkConfigManager config)
         {
-            LoadOrientation(config);
-            GameActivity = gameActivity;
+            manager = new AndroidOrientationManager(config, gameActivity);
+
             localUserPlaying = game.LocalUserPlaying.GetBoundCopy();
             localUserPlaying.BindValueChanged(updateLock, true);
-
-            OrientationBindable.BindValueChanged(value =>
-            {
-                GameActivity.RunOnUiThread(() =>
-                {
-                    CurrentScreenOrientation = OrientationToScreenOrientation(value.NewValue);
-                    GameActivity.RequestedOrientation = CurrentScreenOrientation;
-                });
-            });
         }
 
         /// <summary>
@@ -38,12 +34,12 @@ namespace osu.Android
         /// </summary>
         private void updateLock(ValueChangedEvent<bool> userPlaying)
         {
-            GameActivity.RunOnUiThread(() =>
+            gameActivity.RunOnUiThread(() =>
             {
                 if (userPlaying.NewValue)
-                    GameActivity.RequestedOrientation = ScreenOrientation.Locked;
+                    gameActivity.RequestedOrientation = ScreenOrientation.Locked;
                 else
-                    GameActivity.RequestedOrientation = CurrentScreenOrientation;
+                    gameActivity.RequestedOrientation = manager.CurrentScreenOrientation;
             });
         }
     }
