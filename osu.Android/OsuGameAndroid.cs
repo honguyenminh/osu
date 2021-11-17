@@ -70,7 +70,7 @@ namespace osu.Android
         protected override void LoadComplete()
         {
             base.LoadComplete();
-            LoadComponentAsync(new ScreenOrientationHandler(), Add);
+            LoadComponentAsync(new ScreenOrientationManager(), Add);
         }
 
         protected override UpdateManager CreateUpdateManager() => new SimpleUpdateManager();

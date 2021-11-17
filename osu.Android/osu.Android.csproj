@@ -27,7 +27,7 @@
     <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="ScreenOrientationHandler.cs" />
+    <Compile Include="ScreenOrientationManager.cs" />
     <Compile Include="OsuGameActivity.cs" />
     <Compile Include="OsuGameAndroid.cs" />
   </ItemGroup>
