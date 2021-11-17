@@ -40,15 +40,18 @@ namespace osu.Android
         {
             gameActivity.RunOnUiThread(() =>
             {
-                gameActivity.RequestedOrientation = userPlaying.NewValue ? ScreenOrientation.Locked : orientationToScreenOrientation(orientation.Value);
+                if (userPlaying.NewValue)
+                    gameActivity.RequestedOrientation = ScreenOrientation.Locked;
+                else
+                    gameActivity.RequestedOrientation = orientationToScreenOrientation(orientation.Value);
             });
         }
 
         /// <summary>
-        /// Convert orientation setting enum to ScreenOrientation enum
+        /// Convert <see cref="Orientation"/> framework setting enum to Android's <see cref="ScreenOrientation"/> enum
         /// </summary>
         /// <param name="orientation">Orientation</param>
-        /// <returns>ScreenOrientation enum to use with Android SDK</returns>
+        /// <returns><see cref="ScreenOrientation"/> enum to use with Android SDK</returns>
         private ScreenOrientation orientationToScreenOrientation(Orientation orientation)
         {
             switch (orientation)
@@ -59,7 +62,7 @@ namespace osu.Android
                     return ScreenOrientation.UserPortrait;
                 case Orientation.Auto:
                 default:
-                    return ScreenOrientation.FullUser;
+                    return ScreenOrientation.User;
             }
         }
     }
